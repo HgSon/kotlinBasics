@@ -3,9 +3,9 @@ package minesweeper
 import kotlin.random.Random
 
 fun main() {
-    // TODO 객체지향 전환
     print("How many mines do you want on the field?")
-    val mines = readln().toInt()
+    //val mines = readln().toInt()
+    val mines = 10
     var mineField = createField(mines)
     mineField = countMines(mineField)
     for (line in mineField) {
