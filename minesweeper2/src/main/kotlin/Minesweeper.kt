@@ -2,24 +2,8 @@ package minesweeper
 
 import kotlin.random.Random
 
-//import Minesweeper
-
-fun main() {
-    print("How many mines do you want on the field?")
-    println()
-    //val mines = readln().toInt()
-    val minesweeper = Minesweeper(10).setField().countMines()
-
-    for (line in minesweeper.mineField) {
-        println(line.joinToString(""))
-    }
-}
-
-class Minesweeper(mines: Int = 0, xLength: Int = 9, yLength: Int = 9) {
+class Minesweeper(private val mines: Int = 0, private val xLength: Int = 9, private val yLength: Int = 9) {
     var mineField = MutableList(yLength){ MutableList(xLength){ "." }}
-    val xLength = xLength
-    val yLength = yLength
-    val mines = mines
 
     fun setField():Minesweeper {
         var remain = mines
@@ -28,7 +12,7 @@ class Minesweeper(mines: Int = 0, xLength: Int = 9, yLength: Int = 9) {
             val x = Random.nextInt(0, xLength)
 
             if (mineField[y][x] == "X") {
-                continue;
+                continue
             }
             mineField[y][x] = "X"
             remain--
@@ -40,7 +24,7 @@ class Minesweeper(mines: Int = 0, xLength: Int = 9, yLength: Int = 9) {
         for (y in 0 until yLength) {
             for (x in 0 until xLength) {
                 if (mineField[y][x] == "X") {
-                    continue;
+                    continue
                 }
                 val xMin = if (x - 1 < 0) x else (x - 1)
                 val xMax = if (x + 1 > xLength - 1) x else (x + 1)
@@ -59,6 +43,6 @@ class Minesweeper(mines: Int = 0, xLength: Int = 9, yLength: Int = 9) {
                 mineField[y][x] = if (count == 0) "." else count.toString()
             }
         }
-        return this;
+        return this
     }
 }
