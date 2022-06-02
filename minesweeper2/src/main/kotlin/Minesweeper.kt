@@ -26,16 +26,16 @@ class Minesweeper(private val mines: Int = 0, private val xLength: Int = 9, priv
                 if (mineField[y][x] == "X") {
                     continue
                 }
-                val xMin = if (x - 1 < 0) x else (x - 1)
-                val xMax = if (x + 1 > xLength - 1) x else (x + 1)
-                val yMin = if (y - 1 < 0) y else (y - 1)
-                val yMax = if (y + 1 > yLength - 1) y else (y + 1)
-
                 var count = 0
-                for (innerY in yMin..yMax) {
-                    for (innerX in xMin..xMax) {
-                        if (mineField[innerY][innerX] == "X") {
-                            count++
+
+                for (innerY in (y-1)..(y+1)) {
+                    for (innerX in (x-1)..(x+1)) {
+                        try {
+                            if (mineField[innerY][innerX] == "X") {
+                                count++
+                            }
+                        }catch(e: IndexOutOfBoundsException) {
+
                         }
                     }
                 }
