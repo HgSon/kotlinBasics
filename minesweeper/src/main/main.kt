@@ -3,9 +3,11 @@ package minesweeper
 import kotlin.random.Random
 
 fun main() {
+    // TODO 객체지향 전환
     print("How many mines do you want on the field?")
     val mines = readln().toInt()
-    val mineField = createField(mines)
+    var mineField = createField(mines)
+    mineField = countMines(mineField)
     for (line in mineField) {
         println(line.joinToString(""))
     }
@@ -29,3 +31,35 @@ fun createField(mines: Int):MutableList<MutableList<String>> {
 
 const val X_LENGTH = 9
 const val Y_LENGTH = 9
+
+fun countMines(mineField:MutableList<MutableList<String>>):MutableList<MutableList<String>> {
+    var instance = mineField
+    for (y in 0 until Y_LENGTH) {
+        for (x in 0 until X_LENGTH) {
+            //println("this is [$y][$x]")
+            if (mineField[y][x] == "X") {
+                continue;
+            }
+            val xMin = if (x - 1 < 0) x else (x - 1)
+            val xMax = if (x + 1 > X_LENGTH - 1) x else (x + 1)
+            val yMin = if (y - 1 < 0) y else (y - 1)
+            val yMax = if (y + 1 > Y_LENGTH - 1) y else (y + 1)
+
+            //println("[y] $yMin ~ $yMax,[x] $xMin ~ $xMax")
+
+            var count = 0
+            for (innerY in yMin..yMax) {
+                for (innerX in xMin..xMax) {
+                    //println()
+                    if (mineField[innerY][innerX] == "X") {
+                        count++
+                        //println(count)
+                    }
+                }
+            }
+
+            instance[y][x] = if (count == 0) "." else count.toString()
+        }
+    }
+    return instance
+}
