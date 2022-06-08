@@ -3,30 +3,37 @@ package minesweeper
 import kotlin.random.Random
 
 class Minesweeper(private val mines: Int = 0, private val xLength: Int = 9, private val yLength: Int = 9) {
-    var mineField = MutableList(yLength){ MutableList(xLength){ "." }}
-    var coveredField = MutableList(yLength){ MutableList(xLength){ "." }}
-    var correctMark = 0
-    var incorrectMark = 0
+    var mineField = MutableList(yLength){ MutableList(xLength){ Cell() }}
 
-    fun initMines():Minesweeper {
+    init {
+        initMines(mines)
+        countMinesAround()
+        showField()
+    }
+
+    private fun initMines(mines: Int):Minesweeper {
         var remain = mines
         while(remain > 0) {
             val y = Random.nextInt(0, yLength)
             val x = Random.nextInt(0, xLength)
 
-            if (mineField[y][x] == "X") {
+            if (mineField[y][x].hasMine) {
+                // do not count around mines
+                mineField[y][x].aroundMines = -1
                 continue
             }
-            mineField[y][x] = "X"
+            mineField[y][x].hasMine = true
+
             remain--
         }
         return this
     }
 
-    fun countMines():Minesweeper {
+    private fun countMinesAround():Minesweeper {
         for (y in 0 until yLength) {
             for (x in 0 until xLength) {
-                if (mineField[y][x] == "X") {
+                if (mineField[y][x].hasMine) {
+                    // do not count around mines
                     continue
                 }
                 var count = 0
@@ -34,16 +41,14 @@ class Minesweeper(private val mines: Int = 0, private val xLength: Int = 9, priv
                 for (innerY in (y-1)..(y+1)) {
                     for (innerX in (x-1)..(x+1)) {
                         try {
-                            if (mineField[innerY][innerX] == "X") {
+                            if (mineField[innerY][innerX].hasMine) {
                                 count++
                             }
                         }catch(e: IndexOutOfBoundsException) {
-
                         }
                     }
                 }
-
-                coveredField[y][x] = if (count == 0) "." else count.toString()
+                mineField[y][x].aroundMines = count
             }
         }
         return this
@@ -60,46 +65,35 @@ class Minesweeper(private val mines: Int = 0, private val xLength: Int = 9, priv
         println(" │$xCoords│")
         println("—│$rowSeparator│")
 
-        for (i in 1..yLength) {
-            println("$i|${coveredField[i - 1].joinToString("")}|")
+        for (y in 1..yLength) {
+            print("$y|")
+            mineField[y - 1].forEach{ print(it.display()) }
+            println("|")
         }
         println("—│$rowSeparator│")
     }
 
-    fun updateField(y: Int, x: Int):Minesweeper {
-        if (coveredField[y - 1][x - 1] == ".") {
-            coveredField[y - 1][x - 1] = "*"
-            showField()
-        } else if (coveredField[y - 1][x - 1] == "*") {
-            coveredField[y - 1][x - 1] = "."
-            showField()
-        } else {
+    fun updateField(y: Int, x: Int) {
+        val cell = mineField[y -1][x - 1]
+        if (cell.aroundMines > 0) {
             println("There is a number here!")
+        } else {
+            cell.isMarked = !cell.isMarked
+            showField()
         }
-
-        return this
     }
 
-    fun checkFoundMine(y: Int, x: Int) {
-        // "X", "."
-        val isMine = if (mineField[y - 1][x - 1] == "X") true else false
+    fun isUserWin(): Boolean {
+        return mineField.none { it.any { it.invalidMarking() } }
+    }
 
-        // "*", ".", number
-        val isMarked: Boolean
-        when (coveredField[y - 1][x - 1]) {
-            "*" -> isMarked = true
-            "." -> isMarked = false
-            else -> return
+    inner class Cell(var hasMine: Boolean = false, var isMarked: Boolean = false, var aroundMines: Int = 0) {
+        fun display(): String {
+            return if (aroundMines > 0) aroundMines.toString() else if (isMarked) "*"  else "."
         }
 
-        if (isMine && isMarked) {
-            correctMark++
-        } else if (!isMine && isMarked) {
-            incorrectMark++
-        } else if (isMine && !isMarked) {
-            correctMark--
-        } else if (!isMine && !isMarked) {
-            incorrectMark--
+        fun invalidMarking(): Boolean {
+            return hasMine xor isMarked
         }
     }
 }
