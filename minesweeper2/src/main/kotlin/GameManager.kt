@@ -3,9 +3,10 @@ package minesweeper
 class GameManager {
 
     private var minesweeper: Minesweeper? = null
+    private var firstFree = false
 
-    fun createGame():Minesweeper {
-        print("How many mines do you want on the field?")
+    fun createGame(): Minesweeper {
+        print("How many mines do you want on the field? ")
         //val mines = readln().toInt()
         val mines = 10
         this.minesweeper = Minesweeper(mines)
@@ -13,17 +14,33 @@ class GameManager {
     }
 
     fun playGame() {
-        println("Set/delete mine marks (x and y coordinates): ")
-        //val (xCoord, yCoord) = readln().split(" ").map { it.toInt() }
-        val (xCoord, yCoord) = "3 2".split(" ").map { it.toInt() }
-        minesweeper!!.updateField(yCoord, xCoord)
+        print("Set/unset mine marks or claim a cell as free: ")
+        //val (x, y, action) = readln().split(" ")
+        val (x, y, action) = "3 2 free".split(" ")
+        val xCoord = x.toInt()
+        val yCoord = y.toInt()
+
+        if (!firstFree && action == "free") {
+            firstFree = true
+            minesweeper!!.changeField(yCoord, xCoord)
+        }
+
+        minesweeper!!.updateField(yCoord, xCoord, action)
     }
 
-    fun tellIsUserWin(): Boolean {
+    fun tellUsersWin(): Boolean {
         val isUserWin = minesweeper!!.isUserWin()
         if (isUserWin) {
             println("Congratulations! You found all the mines!")
         }
         return isUserWin
+    }
+
+    fun tellUsersLose(): Boolean {
+        val isUserLose = minesweeper!!.isUserLose()
+        if(isUserLose) {
+            println("You stepped on a mine and failed!")
+        }
+        return isUserLose
     }
 }

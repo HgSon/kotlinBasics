@@ -6,8 +6,9 @@ fun main() {
 
     while (true) {
         gameManager.playGame()
-        if (gameManager.tellIsUserWin()) {
+        if (gameManager.tellUsersWin() || gameManager.tellUsersLose()) {
             break
         }
     }
 }
+
