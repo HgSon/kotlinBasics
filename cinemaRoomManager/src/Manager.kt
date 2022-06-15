@@ -7,10 +7,10 @@ class Manager() {
 
     fun createScheme():Cinema {
         println("Enter the number of rows:")
-        val rows = readln().toInt()
+        val rows = readLine()!!.toInt()
         //val rows = 7
         println("Enter the number of seats in each row:")
-        val columns = readln().toInt()
+        val columns = readLine()!!.toInt()
         //val columns = 8
         cinema = Cinema(rows, columns)
         cinema.setSeatClass()
@@ -19,11 +19,9 @@ class Manager() {
 
     fun handleBooking() {
         println("Enter a row number:")
-        val row = readln().toInt()
-        //val row = 7
+        val row = readLine()!!.toInt() // readln()
         println("Enter a seat number in that row:")
-        val column = readln().toInt()
-        //val column = 8
+        val column = readLine()!!.toInt()
         val price = cinema.getPrice(row, column)
         println("Ticket price: $$price")
 
@@ -34,9 +32,7 @@ class Manager() {
         println("1. Show the seats")
         println("2. Buy a ticket")
         println("0. Exit")
-        val answer = readln()
-        //val answer = "1"
-        when(answer) {
+        when(readLine()) {
             "1" -> cinema.printScheme()
             "2" -> handleBooking()
             "0" -> exit = true
