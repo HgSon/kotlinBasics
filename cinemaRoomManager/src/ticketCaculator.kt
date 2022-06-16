@@ -1,4 +1,0 @@
-package cinema
-
-class ticketCaculator {
-}

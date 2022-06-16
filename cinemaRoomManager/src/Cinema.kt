@@ -33,21 +33,19 @@ class Cinema(val rows: Int = 7, val columns: Int = 8) {
         }
     }
 
-    fun calculateTotalPrice():Int {
-        var vips = 0
-        for (row in 1..rows) {
-            for (column in 1..columns) {
-                if ((scheme[row][column] as Seat).seatClass == SeatClass.VIP) vips++
-            }
-        }
-        return vips * 10 + (totalSeat - vips) * 8
-    }
-
     fun getPrice(row: Int, column: Int): Int {
         return (scheme[row][column] as Seat).seatClass.price
     }
 
-    fun bookSeat(row: Int, column: Int) {
-        (scheme[row][column] as Seat).isBooked = true
+    fun bookSeat(row: Int, column: Int):Boolean {
+        val seat = scheme[row][column] as Seat
+        return if (!seat.isBooked) {
+            seat.isBooked = true
+            true
+        } else {
+            println()
+            println("That ticket has already been purchased!")
+            false
+        }
     }
 }
