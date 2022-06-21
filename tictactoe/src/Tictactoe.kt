@@ -1,6 +1,6 @@
 package tictactoe
 
-class Tictactoe(val columns: Int = 3, rows: Int = 3) {
+class Tictactoe(val columns: Int = 3, val rows: Int = 3) {
     private val rowLiner = "-"
     private val columnLiner = "|"
 
@@ -8,6 +8,18 @@ class Tictactoe(val columns: Int = 3, rows: Int = 3) {
         print("Enter cells: ")
         // val input = readln()
         val input = readLine()!!
+
+        try {
+            drawGrid(input)
+        } catch (e: Exception) {
+            println(e.message)
+        }
+    }
+
+    fun drawGrid(input: String) {
+        if (input.length != columns * rows) {
+            throw Exception("[INVALID INPUT] Expected input length = ${columns * rows} , input length = ${input.length}")
+        }
 
         drawRowBoundary()
 
@@ -25,4 +37,6 @@ class Tictactoe(val columns: Int = 3, rows: Int = 3) {
         }
         println()
     }
+
+
 }
