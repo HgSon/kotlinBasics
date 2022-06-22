@@ -1,6 +1,7 @@
 package tictactoe
 
 fun main() {
-    // write your code here
-    Tictactoe()
+    val tictactoe = Tictactoe()
+    tictactoe.drawGrid()
+    tictactoe.checkStatus()
 }
