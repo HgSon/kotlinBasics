@@ -5,28 +5,36 @@ import kotlin.math.abs
 class Tictactoe(val lengthOfSide: Int = 3) {
     private val rowLiner = "-"
     private val columnLiner = "|"
+    private var step = 0
     private val grid = MutableList(lengthOfSide * lengthOfSide){ Cell() }
 
 
     init {
-        print("Enter cells: ")
-        // val input = readln()
-        val input = readLine()!!
+//        print("Enter cells: ")
+//        // val input = readln()
+//        val input = readLine()!!
 
         try {
-            setGrid(input)
+            setEmptyGrid()
         } catch (e: Exception) {
             println(e.message)
         }
     }
 
-    fun setGrid(input: String) {
+    private fun setGrid(input: String) {
         if (input.length != lengthOfSide * lengthOfSide) {
             throw Exception("[INVALID INPUT] Expected input length = ${lengthOfSide * lengthOfSide} , input length = ${input.length}")
         }
 
         grid.forEachIndexed { index, cell -> run {
             cell.value = input[index].toString()
+            cell.columnNumber = index % lengthOfSide
+            cell.rowNumber = index / lengthOfSide
+        } }
+    }
+
+    private fun setEmptyGrid() {
+        grid.forEachIndexed { index, cell ->  run {
             cell.columnNumber = index % lengthOfSide
             cell.rowNumber = index / lengthOfSide
         } }
@@ -40,7 +48,7 @@ class Tictactoe(val lengthOfSide: Int = 3) {
         drawRowBoundary()
     }
 
-    fun drawRowBoundary() {
+    private fun drawRowBoundary() {
         // grid + space between grid + space outside grid + boundaries
         repeat(lengthOfSide + (lengthOfSide - 1) + 2 + 2) {
             print(rowLiner)
@@ -48,14 +56,30 @@ class Tictactoe(val lengthOfSide: Int = 3) {
         println()
     }
 
-    fun checkStatus() {
+    fun endGame():Boolean {
         when {
-            impossible() -> println("Impossible")
-            winGame("X") -> println("X wins")
-            winGame("O") -> println("O wins")
-            notFinished() -> println("Game not finished")
-            drawGame() -> println("Draw")
+            impossible() -> {
+                println("Impossible")
+                return true
+            }
+            winGame("X") -> {
+                println("X wins")
+                return true
+            }
+            winGame("O") -> {
+                println("O wins")
+                return true
+            }
+//            notFinished() -> {
+//                println("Game not finished")
+//                return false
+//            }
+            drawGame() -> {
+                println("Draw")
+                return true
+            }
         }
+        return false
     }
 
     fun winGame(user: String):Boolean {
@@ -102,7 +126,7 @@ class Tictactoe(val lengthOfSide: Int = 3) {
             println("This cell is occupied! Choose another one!")
             return false
         }
-        cell.value = "X"
+        cell.value = if (++step % 2 == 0) "O" else "X"
         return true
     }
 
