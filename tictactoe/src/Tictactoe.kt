@@ -30,18 +30,13 @@ class Tictactoe(val lengthOfSide: Int = 3) {
             cell.columnNumber = index % lengthOfSide
             cell.rowNumber = index / lengthOfSide
         } }
-
-       // grid.forEachIndexed { index, cell ->  if(index % lengthOfSide == lengthOfSide - 1 ) println(" [${cell.rowNumber},${cell.columnNumber}]") else print(" [${cell.rowNumber},${cell.columnNumber}]") }
-
     }
 
     fun drawGrid() {
         drawRowBoundary()
-
         for (i in grid.indices step lengthOfSide) {
-            println("$columnLiner ${(grid.subList(i, i + lengthOfSide).map { it.value }).joinToString(" ")} $columnLiner")
+            println("$columnLiner ${(grid.subList(i, i + lengthOfSide).map { it.value } ).joinToString(" ").replace("_", " ")} $columnLiner")
         }
-
         drawRowBoundary()
     }
 
@@ -63,17 +58,8 @@ class Tictactoe(val lengthOfSide: Int = 3) {
         }
     }
 
-
-
     fun winGame(user: String):Boolean {
-//        println("grid")
-//        grid.forEachIndexed { index, cell ->  if(index % lengthOfSide == lengthOfSide - 1 ) println(" [${cell.rowNumber},${cell.columnNumber}]") else print(" [${cell.rowNumber},${cell.columnNumber}]") }
-
         val cells = grid.filter { it.value == user }
-//        println("cells")
-//        cells.forEachIndexed { index, cell ->  print("[${cell.rowNumber},${cell.columnNumber}] ") }
-//        println()
-
 
         // horizontal or vertical
         for (i in 0 until lengthOfSide) {
@@ -85,14 +71,6 @@ class Tictactoe(val lengthOfSide: Int = 3) {
         // diagonal
         val leftDiagonal = cells.filter { it.columnNumber == it.rowNumber }
         val rightDiagonal = cells.filter { it.columnNumber == abs(it.rowNumber - (lengthOfSide -  1)) }
-
-//        println("is $user win?")
-//        println("leftDiagonal")
-//        leftDiagonal.sortedBy { it.columnNumber }.forEach{ print("[${it.columnNumber}, ${it.rowNumber}]") }
-//        println()
-//        println("rightDiagonal")
-//        rightDiagonal.sortedBy { it.columnNumber }.forEach{ print("[${it.columnNumber}, ${it.rowNumber}]") }
-//        println()
 
         if (leftDiagonal.size == lengthOfSide || rightDiagonal.size == lengthOfSide) {
             return true
@@ -111,6 +89,35 @@ class Tictactoe(val lengthOfSide: Int = 3) {
 
     fun impossible():Boolean {
         return abs(grid.count { it.value == "X"} - grid.count { it.value == "O"}) > 1 || winGame("X") && winGame("O")
+    }
+
+    fun updateCell(y: Int, x:Int):Boolean {
+        println()
+        val cell = grid.find { it.columnNumber == x && it.rowNumber == y }
+        if (cell == null) {
+            println("Coordinates should be from 1 to $lengthOfSide!")
+            return false
+        }
+        if (cell.value != "_") {
+            println("This cell is occupied! Choose another one!")
+            return false
+        }
+        cell.value = "X"
+        return true
+    }
+
+    fun makeMove() {
+        while (true) {
+            try {
+                print("Enter the coordinates: ")
+                val (yCoord, xCoord) = readLine()!!.split(" ").map { it.toInt() }
+                if(updateCell(yCoord - 1, xCoord - 1)) break
+            } catch (e: NumberFormatException) {
+                println("You should enter numbers!")
+            } catch (e: Exception) {
+                println(e.message)
+            }
+        }
     }
 
     inner class Cell() {
