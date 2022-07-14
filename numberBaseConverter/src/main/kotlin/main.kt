@@ -7,21 +7,15 @@ fun main() {
     print("Enter target base: ")
     val base = readLine()!!.toInt()
     println()
-    print("Conversion result: ${convertDecimal(decimal, base)}")
+    print("Conversion result: ${converter(decimal, base)}")
 }
 
-fun convertDecimal(decimal: Int, base: Int):String {
-    val numberMap = mapOf(10 to "a", 11 to "b", 12 to "c", 13 to "d", 14 to "e", 15 to "f")
-    var result = ""
-    var quotient = decimal
-    while(true) {
-        val num = quotient % base
-        result += if (num < 10) (num).toString() else numberMap.get(num)
-        quotient /= base
-        if (quotient < base) {
-            result += if (quotient < 10) quotient.toString() else numberMap.get(quotient)
-            break
-        }
+fun converter(decimal: Int, base: Int):String {
+    return when(base) {
+        2 -> Integer.toBinaryString(decimal)
+        8 -> Integer.toOctalString(decimal)
+        16 -> Integer.toHexString(decimal)
+        else -> convertDecimal(decimal, base)
     }
-    return result.reversed()
 }
+
